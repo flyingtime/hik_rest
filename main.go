@@ -20,13 +20,10 @@ import (
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
+	"time"
+	"strconv"
 )
 
-
-type Login struct {
-	User     string `form:"user" json:"user" binding:"required"`
-	Password string `form:"password" json:"password" binding:"required"`
-}
 
 type CameraLogin struct {
 	Address     string `form:"address" json:"address" binding:"required"`
@@ -35,9 +32,17 @@ type CameraLogin struct {
 	PassWord    string `form:"passWord" json:"passWord" binding:"required"`
 }
 
+type CameraLogout struct {
+	LUid        string `form:"lUid" json:"lUid" binding:"required"`
+}
+
 type CameraCapture struct {
-	Size     int `form:"size" json:"size" binding:"required"`
-	Quality  int `form:"quality" json:"quality" binding:"required"`
+	Address     string `form:"address" json:"address" binding:"required"`
+	Port        int    `form:"port" json:"port" binding:"required"`
+	UserName    string `form:"userName" json:"userName" binding:"required"`
+	PassWord    string `form:"passWord" json:"passWord" binding:"required"`
+	Quality     string `form:"quality" json:"quality" binding:"required"`
+	Size        string `form:"size" json:"size" binding:"required"`
 
 }
 
@@ -152,7 +157,20 @@ func HikLogin(ip string, port int, login string, password string) (int,int64) {
 	}
 }
 
-func checkLogin(ip string, port int, login string, password string) bool {
+func HikLogout(uid int64){
+
+	C.NET_DVR_Logout((C.LONG)(uid))
+	return
+}
+
+func loginAndCapture(
+	ip string,
+	port int,
+	login string,
+	password string,
+	quality int,
+	size int,
+) (int,string) {
 	var device C.NET_DVR_DEVICEINFO
 
 	c_ip := C.CString(ip)
@@ -175,13 +193,23 @@ func checkLogin(ip string, port int, login string, password string) bool {
 	if uid >= 0 {
 
 		fmt.Printf("log: Logged in: %s:%s@%s id is %d\n", login, password, ip, uid)
-		processSnapshots(ip, uid, login, password, device)
+		t:= time.Unix(time.Now().Unix(),0)
+		filename := fmt.Sprintf("%d_%d_%d_%d_%d_%d.jpg",t.Year(),t.Month(),t.Day(),t.Hour(),t.Minute(),t.Second())
+		returnCode := processSnapshots(ip, uid, login, password, quality, size, filename, device)
 
 		C.NET_DVR_Logout((C.LONG)(uid))
 
-		return true
+		if returnCode == 0 {
+
+			err := Ceph.upload(filename,filename)
+			if err !=nil {
+				return -1, ""
+			}
+		}
+
+		return returnCode, filename
 	} else {
-		return false
+		return (int)(C.NET_DVR_GetLastError()), ""
 	}
 }
 
@@ -206,49 +234,79 @@ func getIpChannelsCount(uid int64) (count int) {
 	return
 }
 
-func processSnapshots(ip string, uid int64, login string, password string, device C.NET_DVR_DEVICEINFO) {
+func processSnapshots(
+	ip string,
+	uid int64,
+	login string,
+	password string,
+	quality int,
+	size int,
+	filename string,
+	device C.NET_DVR_DEVICEINFO,
+) int {
 	ip_count := getIpChannelsCount(uid)
 
 	// SHIT
 	if ip_count != 0 || device.byChanNum != 0 {
+		var result int
 		if device.byChanNum != 0 {
-			getSnapshots(
+			result = getSnapshots(
 				ip,
 				uid,
 				(int)(device.byStartChan),
 				(int)(device.byChanNum),
 				login,
 				password,
+				quality,
+				size,
+				filename,
 			)
 		}
 
 		if ip_count != 0 {
-			getSnapshots(
+			result = getSnapshots(
 				ip,
 				uid,
 				(int)(device.byStartChan)+32,
 				(int)(ip_count),
 				login,
 				password,
+				quality,
+				size,
+				filename,
 			)
 		}
+		return result
 	} else {
 		fmt.Printf("warn: No cameras on %s\n", ip)
+		return -1
 	}
 }
 
-func getSnapshots(ip string, uid int64, startChannel int, count int, login string, password string) {
+func getSnapshots(
+	ip string,
+	uid int64,
+	startChannel int,
+	count int,
+	login string,
+	password string,
+	quality int,
+	size int,
+	filename string,
+) int {
 	downloaded := 0
-	//var shoots_path = "~/temp"
+	//var shoots_path = "~/temp/"
 	for i := startChannel; i < startChannel+count; i++ {
 		//filename := fmt.Sprintf("%s%s_%s_%s_%d.jpg", shoots_path, login, password, ip, i)
-		filename := fmt.Sprintf("%s_%s_%s_%d.jpg", login, password, ip, i)
+		//filename := fmt.Sprintf("%s_%s_%s_%d.jpg", login, password, ip, i)
+
+
 		c_filename := C.CString(filename)
 		defer C.free(unsafe.Pointer(c_filename))
 
 		var imgParams C.NET_DVR_JPEGPARA
-		imgParams.wPicQuality = 0
-		imgParams.wPicSize = 0
+		imgParams.wPicQuality = (C.WORD)(quality)
+		imgParams.wPicSize = (C.WORD)(size)
 
 		result := C.NET_DVR_CaptureJPEGPicture(
 			(C.LONG)(uid),
@@ -271,6 +329,7 @@ func getSnapshots(ip string, uid int64, startChannel int, count int, login strin
 	} else {
 		fmt.Printf("warn: Can't get photos from %s\n", ip)
 	}
+	return (int)(C.NET_DVR_GetLastError())
 }
 
 func main() {
@@ -297,17 +356,12 @@ func main() {
 	})
 
 
-	r.POST("/loginJSON", func(c *gin.Context) {
-		var json Login
-
-		if c.BindJSON(&json) == nil {
-			if json.User == "manu" && json.Password == "123" {
-				checkLogin("10.19.138.110",8000,"admin","abc12345")
-
-				c.JSON(http.StatusOK, gin.H{"status": "you are logged in"})
-			} else {
-				c.JSON(http.StatusUnauthorized, gin.H{"status": "unauthorized"})
-			}
+	r.GET("/testCapture", func(c *gin.Context) {
+		result, location := loginAndCapture("10.19.138.110",8000,"admin","abc12345",0,0)
+		if result == 0 {
+			c.JSON(http.StatusOK, gin.H{"status": result,"cephLocation": location})
+		}else {
+			c.JSON(http.StatusBadRequest, gin.H{"status": result})
 		}
 	})
 
@@ -315,15 +369,54 @@ func main() {
 		var cameraLogin CameraLogin
 
 		if c.BindJSON(&cameraLogin) == nil {
-			var result, uid = HikLogin(cameraLogin.Address,cameraLogin.Port,cameraLogin.UserName,cameraLogin.PassWord)
+			var result, uid = HikLogin(
+				cameraLogin.Address,
+				cameraLogin.Port,
+				cameraLogin.UserName,
+				cameraLogin.PassWord,
+			)
 			if result == 0 {
 
 				c.JSON(http.StatusOK, gin.H{"registerCode": 0, "lUserID": uid})
 			} else {
-				c.JSON(http.StatusUnauthorized, gin.H{"registerCode": result, "lUserID": 0})
+				c.JSON(http.StatusBadRequest, gin.H{"registerCode": result, "lUserID": 0})
 			}
 		}
 	})
+
+	r.GET("/cameraLogout",func(c *gin.Context){
+		var cameraLogout CameraLogout
+
+		if c.Bind(&cameraLogout) == nil{
+			uid,_ := strconv.ParseInt(cameraLogout.LUid,10,64)
+			HikLogout(uid)
+			c.JSON(http.StatusOK, gin.H{"registerCode": 0})
+		}
+	})
+
+	r.POST("/cameraCapture", func(c *gin.Context) {
+		var cameraCapture CameraCapture
+
+		if c.BindJSON(&cameraCapture) == nil {
+			quality,_ := strconv.Atoi(cameraCapture.Quality)
+			size, _ := strconv.Atoi(cameraCapture.Size)
+			result, location := loginAndCapture(
+				cameraCapture.Address,
+				cameraCapture.Port,
+				cameraCapture.UserName,
+				cameraCapture.PassWord,
+				quality,
+				size,
+			)
+			if result == 0 {
+				location = Ceph.Bucket + "/" + location
+				c.JSON(http.StatusOK, gin.H{"captureCode": 0, "cephLocation": location})
+			} else {
+				c.JSON(http.StatusBadRequest, gin.H{"captureCode": result, "cephLocation": location})
+			}
+		}
+	})
+
 
 	r.GET("/cephUpload", func(c *gin.Context) {
 		err := Ceph.upload("test.jpg","test-8-15.jpg")
@@ -335,33 +428,6 @@ func main() {
 
 	})
 
-	// Authorized group (uses gin.BasicAuth() middleware)
-	// Same than:
-	// authorized := r.Group("/")
-	// authorized.Use(gin.BasicAuth(gin.Credentials{
-	//	  "foo":  "bar",
-	//	  "manu": "123",
-	//}))
-	/*
-	authorized := r.Group("/", gin.BasicAuth(gin.Accounts{
-		"foo":  "bar", // user:foo password:bar
-		"manu": "123", // user:manu password:123
-	}))
-
-	authorized.POST("admin", func(c *gin.Context) {
-		user := c.MustGet(gin.AuthUserKey).(string)
-
-		// Parse JSON
-		var json struct {
-			Value string `json:"value" binding:"required"`
-		}
-
-		if c.Bind(&json) == nil {
-			DB[user] = json.Value
-			c.JSON(200, gin.H{"status": "ok"})
-		}
-	})
-	*/
 	// Listen and Server in 0.0.0.0:8080
 	r.Run(":8080")
 }
