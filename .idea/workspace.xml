@@ -2,7 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a4c89aee-b01b-46ff-b080-ef24b1f3a94c" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/main.go" afterPath="$PROJECT_DIR$/main.go" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Dockerfile" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/entrypoint.sh" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Makefile" afterPath="$PROJECT_DIR$/Makefile" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -18,8 +21,8 @@
       <file leaf-file-name="main.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1084">
-              <caret line="58" column="22" lean-forward="true" selection-start-line="58" selection-start-column="22" selection-end-line="58" selection-end-column="22" />
+            <state relative-caret-position="1104">
+              <caret line="60" column="20" lean-forward="false" selection-start-line="60" selection-start-column="20" selection-end-line="60" selection-end-column="20" />
               <folding>
                 <element signature="e#62#479#0" expanded="true" />
               </folding>
@@ -32,6 +35,26 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="478">
               <caret line="489" column="20" lean-forward="false" selection-start-line="489" selection-start-column="20" selection-end-line="489" selection-end-column="20" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Dockerfile" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Dockerfile">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="184">
+              <caret line="8" column="0" lean-forward="true" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="entrypoint.sh" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/entrypoint.sh">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="138">
+              <caret line="6" column="6" lean-forward="false" selection-start-line="6" selection-start-column="6" selection-end-line="6" selection-end-column="6" />
               <folding />
             </state>
           </provider>
@@ -60,8 +83,8 @@
       <file leaf-file-name="Makefile" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Makefile">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="115">
-              <caret line="5" column="6" lean-forward="false" selection-start-line="5" selection-start-column="6" selection-end-line="5" selection-end-column="6" />
+            <state relative-caret-position="138">
+              <caret line="6" column="4" lean-forward="false" selection-start-line="6" selection-start-column="4" selection-end-line="6" selection-end-column="4" />
               <folding />
             </state>
           </provider>
@@ -172,10 +195,12 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/Makefile" />
         <option value="$PROJECT_DIR$/Ceph_test.go" />
         <option value="$PROJECT_DIR$/../ceph_test/Ceph_test.go" />
         <option value="$PROJECT_DIR$/main.go" />
+        <option value="$PROJECT_DIR$/entrypoint.sh" />
+        <option value="$PROJECT_DIR$/Makefile" />
+        <option value="$PROJECT_DIR$/Dockerfile" />
       </list>
     </option>
   </component>
@@ -758,11 +783,10 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="41320000" />
+    <option name="totallyTimeSpent" value="42390000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1076" y="370" width="2545" height="1526" extended-state="0" />
-    <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -780,7 +804,7 @@
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24990177" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24990177" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -923,10 +947,128 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/vendor/github.com/aws/aws-sdk-go/aws/session/session.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="253">
+          <caret line="29" column="5" lean-forward="false" selection-start-line="29" selection-start-column="5" selection-end-line="29" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/vendor/github.com/gin-gonic/gin/binding/binding.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="460">
+          <caret line="23" column="8" lean-forward="false" selection-start-line="23" selection-start-column="8" selection-end-line="23" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1104">
+          <caret line="60" column="20" lean-forward="false" selection-start-line="60" selection-start-column="20" selection-end-line="60" selection-end-column="20" />
+          <folding>
+            <element signature="e#62#479#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Makefile">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="115">
-          <caret line="5" column="6" lean-forward="false" selection-start-line="5" selection-start-column="6" selection-end-line="5" selection-end-column="6" />
+        <state relative-caret-position="138">
+          <caret line="6" column="4" lean-forward="false" selection-start-line="6" selection-start-column="4" selection-end-line="6" selection-end-column="4" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/vendor/github.com/gin-gonic/gin/examples/upload-file/single/main.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/vendor/github.com/gin-gonic/gin/doc.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/vendor/github.com/gin-gonic/gin/README.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="230">
+            <caret line="433" column="4" lean-forward="false" selection-start-line="433" selection-start-column="4" selection-end-line="442" selection-end-column="6" />
+            <folding>
+              <marker date="1502692639280" expanded="false" signature="1237:1263" ph="..." />
+              <marker date="1502692639280" expanded="true" signature="1277:1436" ph="{...}" />
+              <marker date="1502692639280" expanded="true" signature="1336:1388" ph="{...}" />
+              <marker date="1502692639280" expanded="true" signature="6068:6221" ph="/.../" />
+              <marker date="1502692639280" expanded="true" signature="6502:6586" ph="/.../" />
+              <marker date="1502692639280" expanded="true" signature="6932:7074" ph="/.../" />
+              <marker date="1502692639280" expanded="true" signature="7368:7533" ph="/.../" />
+              <marker date="1502692639280" expanded="true" signature="9054:9131" ph="/.../" />
+              <marker date="1502692639280" expanded="true" signature="9722:9800" ph="/.../" />
+              <marker date="1502692639280" expanded="true" signature="10944:11038" ph="/.../" />
+              <marker date="1502692639280" expanded="true" signature="11068:11193" ph="/.../" />
+              <marker date="1502692639280" expanded="false" signature="13771:13810" ph="..." />
+              <marker date="1502692639280" expanded="true" signature="13831:13897" ph="{...}" />
+              <marker date="1502692639280" expanded="true" signature="13911:13992" ph="{...}" />
+              <marker date="1502692639280" expanded="true" signature="14025:14224" ph="{...}" />
+              <marker date="1502692639280" expanded="true" signature="14078:14196" ph="{...}" />
+              <marker date="1502692639280" expanded="false" signature="14393:14432" ph="..." />
+              <marker date="1502692639280" expanded="true" signature="14453:14519" ph="{...}" />
+              <marker date="1502692639280" expanded="true" signature="14533:14614" ph="{...}" />
+              <marker date="1502692639280" expanded="true" signature="14647:15026" ph="{...}" />
+              <marker date="1502692639280" expanded="true" signature="14669:14908" ph="/.../" />
+              <marker date="1502692639280" expanded="true" signature="14936:14997" ph="{...}" />
+              <marker date="1502692639280" expanded="true" signature="15435:15812" ph="..." />
+              <marker date="1502692639280" expanded="false" signature="15931:15962" ph="..." />
+              <marker date="1502692639280" expanded="true" signature="15986:16093" ph="{...}" />
+              <marker date="1502692639280" expanded="true" signature="16107:16668" ph="{...}" />
+              <marker date="1502692639280" expanded="true" signature="16178:16644" ph="{...}" />
+              <marker date="1502692639280" expanded="true" signature="16182:16345" ph="/.../" />
+              <marker date="1502692639280" expanded="true" signature="16457:16641" ph="{...}" />
+              <marker date="1502692639280" expanded="true" signature="16516:16576" ph="{...}" />
+              <marker date="1502692639280" expanded="true" signature="16582:16637" ph="{...}" />
+              <marker date="1502692639280" expanded="true" signature="17252:17372" ph="/.../" />
+              <marker date="1502692639280" expanded="true" signature="17898:17979" ph="/.../" />
+              <marker date="1502692639280" expanded="true" signature="18939:18975" ph="..." />
+              <marker date="1502692639280" expanded="true" signature="18945:18967" ph="..." />
+              <marker date="1502692639280" expanded="true" signature="19488:19550" ph="..." />
+              <marker date="1502692639280" expanded="true" signature="19492:19512" ph="..." />
+              <marker date="1502692639280" expanded="true" signature="19640:19702" ph="..." />
+              <marker date="1502692639280" expanded="true" signature="19644:19664" ph="..." />
+              <marker date="1502692639280" expanded="true" signature="22339:22433" ph="/.../" />
+              <marker date="1502692639280" expanded="true" signature="22583:22647" ph="/.../" />
+              <marker date="1502692639280" expanded="false" signature="24508:24579" ph="..." />
+              <marker date="1502692639280" expanded="true" signature="24593:24761" ph="{...}" />
+              <marker date="1502692639280" expanded="true" signature="24670:24698" ph="{...}" />
+              <marker date="1502692639280" expanded="false" signature="24879:24987" ph="..." />
+              <marker date="1502692639280" expanded="true" signature="25001:25336" ph="{...}" />
+              <marker date="1502692639280" expanded="true" signature="25078:25106" ph="{...}" />
+              <marker date="1502692639280" expanded="true" signature="25131:25291" ph="{...}" />
+              <marker date="1502692639280" expanded="false" signature="26522:26611" ph="..." />
+              <marker date="1502692639280" expanded="true" signature="26625:27379" ph="{...}" />
+              <marker date="1502692639280" expanded="true" signature="26690:26772" ph="{...}" />
+              <marker date="1502692639280" expanded="true" signature="26795:26838" ph="{...}" />
+              <marker date="1502692639280" expanded="true" signature="26851:26966" ph="{...}" />
+              <marker date="1502692639280" expanded="true" signature="26923:26963" ph="{...}" />
+              <marker date="1502692639280" expanded="true" signature="26971:27066" ph="/.../" />
+              <marker date="1502692639280" expanded="true" signature="27307:27348" ph="{...}" />
+            </folding>
+          </first_editor>
+          <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Ceph_test.go" />
+    <entry file="file://$PROJECT_DIR$/../ceph_test/Ceph_test.go" />
+    <entry file="file://$PROJECT_DIR$/vendor/github.com/gin-gonic/gin/examples/basic/main.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="8" lean-forward="false" selection-start-line="0" selection-start-column="8" selection-end-line="0" selection-end-column="12" />
           <folding />
         </state>
       </provider>
@@ -947,10 +1089,42 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/vendor/github.com/gin-gonic/gin/context.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="478">
+          <caret line="489" column="20" lean-forward="false" selection-start-line="489" selection-start-column="20" selection-end-line="489" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Makefile">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="138">
+          <caret line="6" column="4" lean-forward="false" selection-start-line="6" selection-start-column="4" selection-end-line="6" selection-end-column="4" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/entrypoint.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="138">
+          <caret line="6" column="6" lean-forward="false" selection-start-line="6" selection-start-column="6" selection-end-line="6" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Dockerfile">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="184">
+          <caret line="8" column="0" lean-forward="true" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/main.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1084">
-          <caret line="58" column="22" lean-forward="true" selection-start-line="58" selection-start-column="22" selection-end-line="58" selection-end-column="22" />
+        <state relative-caret-position="1104">
+          <caret line="60" column="20" lean-forward="false" selection-start-line="60" selection-start-column="20" selection-end-line="60" selection-end-column="20" />
           <folding>
             <element signature="e#62#479#0" expanded="true" />
           </folding>
