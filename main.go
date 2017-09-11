@@ -27,7 +27,7 @@ import (
 
 type CameraLogin struct {
 	Address     string `form:"address" json:"address" binding:"required"`
-	Port        int    `form:"port" json:"port" binding:"required"`
+	Port        string `form:"port" json:"port" binding:"required"`
 	UserName    string `form:"userName" json:"userName" binding:"required"`
 	PassWord    string `form:"passWord" json:"passWord" binding:"required"`
 }
@@ -38,7 +38,7 @@ type CameraLogout struct {
 
 type CameraCapture struct {
 	Address     string `form:"address" json:"address" binding:"required"`
-	Port        int    `form:"port" json:"port" binding:"required"`
+	Port        string `form:"port" json:"port" binding:"required"`
 	UserName    string `form:"userName" json:"userName" binding:"required"`
 	PassWord    string `form:"passWord" json:"passWord" binding:"required"`
 	Quality     string `form:"quality" json:"quality" binding:"required"`
@@ -62,6 +62,10 @@ var Ceph = &CephMgr{
 	PathStyle: true,
 }
 
+func cephErrorf(msg string, args ... interface{})  {
+	fmt.Fprintf(os.Stderr,msg+"\n",args...)
+
+}
 
 
 func (CM *CephMgr) connect()(*session.Session, error){
@@ -93,16 +97,18 @@ func (CM *CephMgr) upload(fileName string, key string) error{
 	_, err = uploader.Upload(&s3manager.UploadInput{
 		Bucket: aws.String(CM.Bucket),
 		Key:    aws.String(key),
+		ACL:    aws.String("public-read"),
 		Body:   file,
 	})
 
 	if err != nil{
 
-		fmt.Printf("Unable to upload %q to %q\n", fileName, CM.Bucket,)
-		fmt.Println(err.Error())
-
+		//fmt.Printf("Unable to upload %q to %q\n", fileName, CM.Bucket)
+		//fmt.Println(err.Error())
+		cephErrorf("Unable to upload %q to %q, %v", fileName, CM.Bucket, err)
 		return err
 	}
+
 	fmt.Printf("log: upload: success upload file %q to %q, %v\n", fileName, CM.Bucket, err)
 
 	return nil
@@ -122,6 +128,7 @@ func (CM *CephMgr) listBucket(){
 			fmt.Printf("%s create on %s\n",aws.StringValue(b.Name),aws.TimeValue(b.CreationDate))
 		}
 	}
+
 }
 
 func HikLogin(ip string, port int, login string, password string) (int,int64) {
@@ -163,6 +170,39 @@ func HikLogout(uid int64){
 	return
 }
 
+func ConnectionTest(ip string, port int, login string, password string) (int,int64){
+	var device C.NET_DVR_DEVICEINFO
+
+	c_ip := C.CString(ip)
+	defer C.free(unsafe.Pointer(c_ip))
+
+	c_login := C.CString(login)
+	defer C.free(unsafe.Pointer(c_login))
+
+	c_password := C.CString(password)
+	defer C.free(unsafe.Pointer(c_password))
+
+	uid := (int64)(C.NET_DVR_Login(
+		c_ip,
+		C.WORD(port),
+		c_login,
+		c_password,
+		(*C.NET_DVR_DEVICEINFO)(unsafe.Pointer(&device)),
+	))
+
+	if uid >= 0 {
+
+		fmt.Printf("log: Logged in: %s:%s@%s id is %d\n", login, password, ip, uid)
+
+		C.NET_DVR_Logout((C.LONG)(uid))
+
+		return 0, uid
+	} else {
+		fmt.Printf("error: Logged error: %s:%s@%s id is %d\n", login, password, ip, uid)
+		return (int)(C.NET_DVR_GetLastError()), uid
+	}
+}
+
 func loginAndCapture(
 	ip string,
 	port int,
@@ -194,7 +234,7 @@ func loginAndCapture(
 
 		fmt.Printf("log: Logged in: %s:%s@%s id is %d\n", login, password, ip, uid)
 		t:= time.Unix(time.Now().Unix(),0)
-		filename := fmt.Sprintf("%d_%d_%d_%d_%d_%d.jpg",t.Year(),t.Month(),t.Day(),t.Hour(),t.Minute(),t.Second())
+		filename := fmt.Sprintf("%s_%d_%d_%d_%d_%d_%d.jpg",ip,t.Year(),t.Month(),t.Day(),t.Hour(),t.Minute(),t.Second())
 		returnCode := processSnapshots(ip, uid, login, password, quality, size, filename, device)
 
 		C.NET_DVR_Logout((C.LONG)(uid))
@@ -279,7 +319,7 @@ func processSnapshots(
 		return result
 	} else {
 		fmt.Printf("warn: No cameras on %s\n", ip)
-		return -1
+		return 3005
 	}
 }
 
@@ -351,7 +391,7 @@ func main() {
 	r := gin.Default()
 
 	// Ping test
-	r.GET("/ping", func(c *gin.Context) {
+	r.GET("/testPing", func(c *gin.Context) {
 		c.String(200, "pong")
 	})
 
@@ -369,9 +409,10 @@ func main() {
 		var cameraLogin CameraLogin
 
 		if c.BindJSON(&cameraLogin) == nil {
+			port,_ := strconv.Atoi(cameraLogin.Port)
 			var result, uid = HikLogin(
 				cameraLogin.Address,
-				cameraLogin.Port,
+				port,
 				cameraLogin.UserName,
 				cameraLogin.PassWord,
 			)
@@ -394,15 +435,36 @@ func main() {
 		}
 	})
 
+	r.GET("/ConnectionTest", func(c *gin.Context) {
+		var cameraLogin CameraLogin
+
+		if c.BindJSON(&cameraLogin) == nil {
+			port,_ := strconv.Atoi(cameraLogin.Port)
+			var result, uid = ConnectionTest(
+				cameraLogin.Address,
+				port,
+				cameraLogin.UserName,
+				cameraLogin.PassWord,
+			)
+			if result == 0 {
+
+				c.JSON(http.StatusOK, gin.H{"registerCode": 0, "lUserID": uid})
+			} else {
+				c.JSON(http.StatusBadRequest, gin.H{"registerCode": result, "lUserID": 0})
+			}
+		}
+	})
+
 	r.POST("/cameraCapture", func(c *gin.Context) {
 		var cameraCapture CameraCapture
 
 		if c.BindJSON(&cameraCapture) == nil {
+			port,_ := strconv.Atoi(cameraCapture.Port)
 			quality,_ := strconv.Atoi(cameraCapture.Quality)
 			size, _ := strconv.Atoi(cameraCapture.Size)
 			result, location := loginAndCapture(
 				cameraCapture.Address,
-				cameraCapture.Port,
+				port,
 				cameraCapture.UserName,
 				cameraCapture.PassWord,
 				quality,
