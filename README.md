@@ -86,7 +86,8 @@ GET /ConnectionTest HTTP/1.1
 ```
 
 ### 参考
-gin: https://github.com/gin-gonic/gin
-hik sdk: http://www.hikvision.com/cn/download_61.html
-Ceph go sdk: http://github.com/aws/aws-sdk-go
-hik sdk cgo: https://github.com/superhacker777/hikka
+* gin: https://github.com/gin-gonic/gin
+* hik sdk: http://www.hikvision.com/cn/download_61.html
+* Ceph go sdk: http://github.com/aws/aws-sdk-go
+* hik sdk cgo: https://github.com/superhacker777/hikka
+
